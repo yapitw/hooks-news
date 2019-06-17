@@ -8,7 +8,6 @@ function LinkItem({ link, index, showCount, history }) {
   const { firebase, user } = React.useContext(FirebaseContext)
 
   function handleVote() {
-    console.log(user)
     if (!user) {
       history.push('/login')
     } else {
@@ -18,11 +17,25 @@ function LinkItem({ link, index, showCount, history }) {
           const previousVotes = doc.data().votes
           const vote = { votedBy: { id: user.uid, name: user.displayName } }
           const updatedVotes = [...previousVotes, vote]
-          voteRef.update({ vote: updatedVotes })
+          voteRef.update({ votes: updatedVotes })
         }
       })
     }
   }
+
+  function handleDeleteLink() {
+    const linkRef = firebase.db.collection('links').doc(link.id)
+    linkRef
+      .delete()
+      .then(() => {
+        console.log(`Document with ID ${link.id} deleted`)
+      })
+      .catch(err => {
+        console.error('Error deleting document', err)
+      })
+  }
+
+  const postedByAuthUser = user && user.uid === link.postedBy.id
 
   return (
     <div className="flex items-start mt2">
@@ -46,6 +59,14 @@ function LinkItem({ link, index, showCount, history }) {
               ? `${link.comments.length} comments`
               : 'discuss'}
           </Link>
+          {postedByAuthUser && (
+            <>
+              {' | '}
+              <span className="delete-button" onClick={handleDeleteLink}>
+                delete
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>
