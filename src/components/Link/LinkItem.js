@@ -47,7 +47,7 @@ function LinkItem({ link, index, showCount, history }) {
       </div>
       <div className="ml1">
         <div>
-          {link.description}{' '}
+          <a className="black no-underline">{link.description}</a>{' '}
           <span className="link">({getDomain(link.url)})</span>
         </div>
         <div className="f6 lh-copy gray">
