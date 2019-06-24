@@ -14,13 +14,14 @@ const db = admin.firestore()
 //
 exports.linksPagination = functions.https.onRequest((request, response) => {
   response.set('Access-Control-Allow-Origin', '*')
-  let linksRef = db.collection('link')
+  let linksRef = db.collection('links')
   const offset = Number(request.query.offset)
   linksRef
     .orderBy('created', 'desc')
     .limit(LINKS_PER_PAGE)
     .offset(offset)
-    .get(snapshot => {
+    .get()
+    .then(snapshot => {
       const links = snapshot.docs.map(doc => {
         return { id: doc.id, ...doc.data() }
       })

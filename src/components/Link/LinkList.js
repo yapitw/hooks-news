@@ -39,7 +39,7 @@ function LinkList(props) {
         .limit(LINKS_PER_PAGE)
         .onSnapshot(handleSnapshot)
     } else {
-      const offset = page * LINKS_PER_PAGE
+      const offset = page - 1 * LINKS_PER_PAGE
       axios
         .get(
           `https://us-central1-marshall-3a11e.cloudfunctions.net/linksPagination?offset=${offset}`
