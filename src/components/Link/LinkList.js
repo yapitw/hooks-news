@@ -6,13 +6,21 @@ function LinkList(props) {
   const { firebase } = React.useContext(FirebaseContext)
   const [links, setLinks] = React.useState([])
   const isNewPage = props.location.pathname.includes('new')
+  const isTopPage = props.location.pathname.includes('top')
 
   React.useEffect(() => {
-    getLinks()
-  }, [])
+    const unsubscribe = getLinks()
+    return () => unsubscribe()
+  }, [isTopPage])
 
   function getLinks() {
-    firebase.db
+    if (isTopPage) {
+      return firebase.db
+        .collection('links')
+        .orderBy('voteCount', 'desc')
+        .onSnapshot(handleSnapshot)
+    }
+    return firebase.db
       .collection('links')
       .orderBy('created', 'desc')
       .onSnapshot(handleSnapshot)
